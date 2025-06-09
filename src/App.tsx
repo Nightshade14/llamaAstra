@@ -6,17 +6,28 @@ function App() {
   const [facingMode, setFacingMode] = useState<string | { exact: string }>('environment');
   const [isMobile, setIsMobile] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cameraReady, setCameraReady] = useState(false);
 
   useEffect(() => {
     const userAgent = navigator.userAgent;
     if (/android|iPad|iPhone|iPod/i.test(userAgent.toLowerCase())) {
       setIsMobile(true);
     }
+    
+    // Request camera permissions
+    navigator.mediaDevices?.getUserMedia({ video: true })
+      .then(() => {
+        setCameraReady(true);
+        setError(null);
+      })
+      .catch((err) => {
+        setError(`Camera permission denied: ${err.message}`);
+      });
   }, []);
 
-  const videoConstraints: MediaStreamConstraints = {
+  const videoConstraints = {
     video: {
-      facingMode: isMobile ? 'environment' : 'user'
+      facingMode: facingMode
     }
   };
 
@@ -30,30 +41,43 @@ function App() {
     setError(`Camera access error: ${error}`);
   };
 
+  const handleUserMedia = (stream: MediaStream) => {
+    setCameraReady(true);
+    setError(null);
+  };
+
   return (
-    <div className="App" style={{ display: 'flex', flexDirection: 'column', height: '100vh', justifyContent: 'center', alignItems: 'center' }}>
-      <header className="App-header" style={{ width: '100%', textAlign: 'center', padding: '10px' }}>
-        <h1 style={{ margin: 0 }}>Llama Astra Camera PWA</h1>
+    <div className="App">
+      <header className="App-header">
+        <h1>Llama Astra Camera PWA</h1>
         {error ? (
-          <div style={{ color: 'red', margin: '10px 0' }}>
+          <div className="error-message">
             <p>{error}</p>
             <p>Please ensure camera permissions are granted and the camera is available.</p>
           </div>
         ) : (
-          <div style={{ width: '90%', maxHeight: '80vh', margin: '10px auto', overflow: 'hidden', borderRadius: '10px', aspectRatio: '4 / 3' }}>
+          <div className="camera-container">
             <Webcam
               audio={false}
               screenshotFormat="image/jpeg"
               videoConstraints={videoConstraints}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              className="camera-feed"
               onUserMediaError={handleUserMediaError}
+              onUserMedia={handleUserMedia}
             />
           </div>
         )}
-        <button onClick={switchCamera} style={{ margin: '10px 0', padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}>
-          Switch Camera
-        </button>
-        <p style={{ margin: 0, fontSize: '14px' }}>Install this app on your device for the best experience.</p>
+        <div className="camera-controls">
+          <button onClick={switchCamera} className="control-button">
+            Switch Camera
+          </button>
+        </div>
+        <p className="status-text">
+          {cameraReady ? 'Camera ready!' : 'Loading camera...'}
+        </p>
+        <p className="status-text">
+          Install this app on your device for the best experience.
+        </p>
       </header>
     </div>
   );
