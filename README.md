@@ -23,7 +23,7 @@ Llama Astra is a revolutionary **Progressive Web App (PWA)** that transforms you
 
 - **🧑‍🦯 Accessibility First**: Designed with vision-impaired users in mind, providing real-time environmental understanding
 - **📱 Universal Access**: Works on any modern smartphone through the browser—no app store required
-- **🚀 Lightning Fast**: Powered by Cerebras and Groq's low-latency inference APIs for near-instantaneous responses
+- **🚀 Lightning Fast**: Powered by Cerebras's low-latency Llama 4 inference APIs via Llama API for near-instantaneous responses
 - **🔊 Voice-Powered**: Hands-free operation with speech recognition and audio feedback
 - **🌐 Offline-Capable**: PWA technology ensures reliability even with poor connectivity
 
@@ -108,7 +108,7 @@ serve -s build -p 3000
 - **Camera**: React Webcam integration
 - **Speech**: Web Speech API
 - **PWA**: Service Worker, Web App Manifest
-- **AI Integration**: Cerebras/Groq APIs for Llama 4
+- **AI Integration**: Cerebras APIs for Llama 4 via Llama API
 
 ### 📁 **Project Structure**
 ```
